@@ -67,7 +67,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (!res.ok) return false
 
       const data = await res.json()
-      const token = data.token
+      const token = data.access_token
 
       const payload = decodeToken(token)
       if (!payload?.email || !payload?.user_type) return false
