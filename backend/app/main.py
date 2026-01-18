@@ -14,6 +14,7 @@ from app.security import verify_password
 
 from app.schemas import RegisterRequest
 from app.schemas import LoginRequest
+from app.schemas import LoginResponse
 
 
 app = FastAPI()
