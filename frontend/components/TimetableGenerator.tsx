@@ -43,7 +43,7 @@ export default function TimetableGenerator() {
     formData.append("file", fileInput.files[0]);
 
     setLoading(true);
-    const response = await fetch("http://edunova1-production.up.railway.app/generate", {
+    const response = await fetch("https://edunova1-production.up.railway.app/generate", {
       method: "POST",
       body: formData,
     });
