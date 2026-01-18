@@ -5,8 +5,11 @@ pwd_context = CryptContext(
     deprecated="auto"
 )
 
-def hash_password(password: str):
+def hash_password(password: str) -> str:
+    password = password.encode("utf-8")[:72]
     return pwd_context.hash(password)
 
-def verify_password(password: str, hashed: str):
-    return pwd_context.verify(password, hashed)
+
+def verify_password(plain: str, hashed: str) -> bool:
+    plain = plain.encode("utf-8")[:72]
+    return pwd_context.verify(plain, hashed)
