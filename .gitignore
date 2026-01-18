@@ -1,0 +1,10 @@
+# backend
+backend/venv/
+backend/.env
+
+# frontend
+frontend/.env.local
+frontend/node_modules/
+
+# common
+__pycache__/
