@@ -12,6 +12,9 @@ from app.database import users
 from app.security import hash_password
 from app.security import verify_password
 
+from app.schemas import RegisterRequest
+from app.schemas import LoginRequest
+
 
 app = FastAPI()
 
@@ -23,34 +26,34 @@ app.add_middleware(
 )
 
 @app.post("/register")
-def register(data: dict):
-    # Check if email already exists
-    if users.find_one({"email": data["email"]}):
+def register(data: RegisterRequest):
+    if users.find_one({"email": data.email}):
         raise HTTPException(status_code=400, detail="User already exists")
 
-    data["user_type"] = "student"
+    hashed_password = hash_password(data.password)
 
-    # Hash password before saving
-    data["password"] = hash_password(data["password"])
-
-    # Insert into MongoDB
-    users.insert_one(data)
+    users.insert_one({
+        "name": data.name,
+        "email": data.email,
+        "password": hashed_password,
+        "user_type": data.user_type
+    })
 
     return {"message": "User registered successfully"}
 
 
-@app.post("/login")
-def login(data: dict):
-    # 1. Find user by email
-    user = users.find_one({"email": data["email"]})
+@app.post("/login", response_model=LoginResponse)
+def login(data: LoginRequest):
+    # 1. Find user
+    user = users.find_one({"email": data.email})
     if not user:
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
     # 2. Verify password
-    if not verify_password(data["password"], user["password"]):
+    if not verify_password(data.password, user["password"]):
         raise HTTPException(status_code=400, detail="Invalid credentials")
 
-    # 3. Create JWT with role
+    # 3. Create JWT
     token = jwt.encode(
         {
             "email": user["email"],
@@ -60,7 +63,10 @@ def login(data: dict):
         algorithm="HS256"
     )
 
-    return {"token": token}
+    return {
+        "access_token": token,
+        "user_type": user["user_type"]
+    }
 
 
 
