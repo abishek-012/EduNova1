@@ -1,5 +1,4 @@
 .venv/
-.Files/
 # backend
 backend/venv/
 backend/.env
