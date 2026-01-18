@@ -36,7 +36,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import AttendanceSystem from "@/components/attendance-system";
+import dynamic from "next/dynamic"
 
 interface Class {
   id: string;
@@ -63,6 +63,11 @@ interface LiveSession {
   scheduledTime: string;
   status: "upcoming" | "live" | "completed";
 }
+
+const AttendanceSystem = dynamic(
+  () => import("@/components/attendance-system"),
+  { ssr: false }
+)
 
 export default function TeacherDashboard() {
   const { user, logout } = useAuth();
